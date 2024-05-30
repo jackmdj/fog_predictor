@@ -61,7 +61,7 @@ def scrape_weather_info():
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
 
-def write_to_csv(data, filename='weather_data.csv'):
+def write_to_csv(data, filename='prediction_data.csv'):
     fieldnames = ['Observation Time', 'Temperature', 'Humidity', 'Dew Point', 'Trend', 'Fog']
     
     # Check if file exists to determine if we need to write headers
@@ -104,7 +104,7 @@ def parse_weather_report(text):
     
     return data
 
-def read_most_recent_data(filename='weather_data.csv'):
+def read_most_recent_data(filename='prediction_data.csv'):
     # Using pandas to read the last row of the CSV
     df = pd.read_csv(filename)
     most_recent_entry = df.iloc[-1]
@@ -176,7 +176,7 @@ def transform():
         transforms.Normalize(mean=mean.tolist(), std=sd.tolist())
     ])
     pred_data = datasets.ImageFolder(root=pred_dir, transform=transform)
-    image, _ = pred_data[0]  # dataset returns (image, label)
+    image, _ = pred_data[-1]  # dataset returns (image, label)
     return image
 
 def read_most_recent_stats(filename='weather_data.csv'):
@@ -188,7 +188,7 @@ def read_most_recent_stats(filename='weather_data.csv'):
     data['Humidity'] = data['Humidity'].str.replace('%', '').astype(float)
     
     # Encode categorical data
-    trend_mapping = {'steady': 2, 'rising': 1, 'falling': 0}  # Example encoding
+    trend_mapping = {'steady': 2, 'rising': 1, 'falling': 0}
     data['Trend'] = data['Trend'].map(trend_mapping).astype(float)
     
 
